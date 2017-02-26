@@ -4,28 +4,29 @@ import (
 	"fmt"
 	"os"
 
-	cli "gopkg.in/urfave/cli.v1"
+	cli "gopkg.in/urfave/cli.v2"
 )
 
 func main() {
-	app := cli.NewApp()
-	app.UsageText = fmt.Sprintf("%s [name]", os.Args[0])
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:  "greeting",
-			Usage: "",
-			Value: "Hello",
+	app := &cli.App{
+		Usage: fmt.Sprintf("%s [name]", os.Args[0]),
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "greeting",
+				Usage: "",
+				Value: "Hello",
+			},
 		},
-	}
-	app.Action = func(c *cli.Context) error {
-		if c.NArg() != 1 {
-			return cli.ShowAppHelp(c)
-		}
+		Action: func(c *cli.Context) error {
+			if c.NArg() != 1 {
+				return cli.ShowAppHelp(c)
+			}
 
-		fmt.Printf("NArg: %d\n", c.NArg())
-		fmt.Printf("%s, %s", c.String("greeting"), c.Args()[0])
+			fmt.Printf("NArg: %d\n", c.NArg())
+			fmt.Printf("%s, %s\n", c.String("greeting"), c.Args().Get(0))
 
-		return nil
+			return nil
+		},
 	}
 
 	app.Run(os.Args)
